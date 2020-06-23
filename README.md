@@ -1,6 +1,6 @@
 # Hearthstone Browser, v1.0
 
-A small application for browsing HearthStone cards and building your own decks using the HearthStone API hosted at RapidAPI. The decks can be exported into `JSON` files, which then can be imported again into the application.
+A small application for browsing Hearthstone cards and building your own decks using the Hearthstone API hosted at [RapidAPI](https://rapidapi.com/). The decks can be exported into `JSON` files, which then can be imported again into the application.
 
 This project is made with React and TypeScript, and it queries the remote API only when the searched cards have not been downloaded before. The application searches first in the local content for the desired data before attempting to query from the remote API.
 
