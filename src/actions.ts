@@ -19,8 +19,6 @@ import {
   IAddCardAction,
   IRemoveCardAction,
   IEmptyDeckAction,
-  ISaveDeckAction,
-  ILoadDeckAction,
   IFetchCardsAction,
 } from './types';
 
@@ -186,19 +184,19 @@ export function fetchCardsForPage(page: number, itemsPage: number): IFetchCardsA
 }
 
 /**
- * Se ejecuta cuando se hace hover sobre una carta.
+ * Gets executed when a card is hovered.
  * @returns Redux Thunk.
  */
 export function hoverCard(): AppThunk {
   return () => {
-    // Por ahora solo tenemos sonido.
-    // Esta acción se usará en el futuro para mostrar datos de la carta en una caja flotante.
+    // This tunk is just a placehoder for future functionality, since this
+    // is not necessary for just playing audio.
     playAudio(cardHoverSound);
   };
 }
 
 /**
- * Get executed when a card is clicked.
+ * Gets executed when a card is clicked.
  * @param id Card ID.
  * @returns Redux Thunk.
  */
@@ -211,9 +209,9 @@ export function clickCard(id: string): IClickCardAction {
 }
 
 /**
- * Se jecuta para seleccionas una carta para que salga en el panel de información.
- * @param id ID de la carta.
- * @returns Acción redux.
+ * Selects the card that should be shown on the information panel.
+ * @param id Card id.
+ * @returns Redux action.
  */
 export function selectCard(id: string): ISelectCardAction {
   return {
@@ -223,9 +221,9 @@ export function selectCard(id: string): ISelectCardAction {
 }
 
 /**
- * Se ejecuta para añadir una carta al mazo.
- * @param cardData Datos de la carta a añadir.
- * @returns Acción redux.
+ * Adds a card to the deck.
+ * @param cardData Data for the card to add.
+ * @returns Redux action.
  */
 export function addCard(cardData: ICard): IAddCardAction {
   playAudio(notificationSound);
@@ -236,9 +234,9 @@ export function addCard(cardData: ICard): IAddCardAction {
 }
 
 /**
- * Se ejecuta para quitar una carta del mazo.
- * @param cardId ID de la carta.
- * @returns Acción redux.
+ * Removes a card from the deck.
+ * @param cardId Id of the card to remove.
+ * @returns Redux Action.
  */
 export function removeCard(cardId: string): IRemoveCardAction {
   playAudio(cardRemovedSound);
@@ -336,7 +334,7 @@ export function loadDeck(): AppThunk {
 }
 
 /**
- * Se ejecuta cuando se resetan los filtros.
+ * Resets the filters and current loaded cards.
  * @returns Thunk redux.
  */
 export function reset(): AppThunk {

@@ -7,7 +7,6 @@
 export default {
   appName: 'Hearthstone Browser',
   version: '1.0',
-  debug: Boolean(process.env.DEBUG) || false,
   apiURL: process.env.API_URL,
   apiKey: process.env.API_KEY,
   apiImgURL: process.env.API_IMG_URL,

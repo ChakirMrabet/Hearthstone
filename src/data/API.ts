@@ -8,7 +8,9 @@ import { IFilters, ICard, IPaginatedCards } from '../types';
 import Fetch from './fetch';
 import { hasProps } from '../utils/validation';
 
-/** Mapeo de nombres de filtro a los nombres de las propiedades de cartas. */
+/**
+ * Maps filter names to card property names.
+ */
 const filterToProp = {
   classes: 'playerClass',
   sets: 'cardSet',
@@ -18,10 +20,16 @@ const filterToProp = {
   races: 'race',
 };
 
-/** Filtros que queremos usar. */
+/**
+ * Defines the filters we want to use from all the set returned
+ * by the Hearthstone API.
+ */
 const desiredFilters = ['classes', 'types', 'sets', 'factions', 'qualities', 'races'];
 
-/** Propiedades de las cartas que queremos usar. */
+/**
+ * Defines the card properties we want to use from all the set returned
+ * by the Hearthstone API.
+ */
 const desiredCardProperties = [
   'cardId',
   'name',
@@ -36,7 +44,6 @@ const desiredCardProperties = [
 ];
 
 export default class API {
-  /** Número de cartas a devolver por página. */
   private cardsPerPage: number;
   private filters: IFilters;
   private cards: ICard[];
@@ -56,9 +63,9 @@ export default class API {
   }
 
   /**
-   * Realiza una primera consulta para obtener los filtros disponibles en la API remota.
+   * Queries for the API for the first time.
    * @async
-   * @returns Promesa que resuelve en filtros.
+   * @returns Promise that returns filters.
    */
   async init(): Promise<IFilters> {
     this.cardsPerPage = 10;
@@ -79,28 +86,25 @@ export default class API {
   }
 
   /**
-   * Devuelve una promesa que resuelve en todas las cartas filtradas por el nombre de filtro dado y su valor.
+   * Returns from the API all the cards that satisfy the current stack of active filters.
+   * The filter passed as argument gets added to the stack of filters, which are
+   * applied in consecutive calls to the this same method in order to filter the cards.
+   * When the value of the filter is empty, the filter will be removed from the stack of filters.
    * @async
-   * @param filterName Nombre del filtro.
-   * @param filterValue Valor del filtro.
-   * @returns Promesa que resuelve en las cartas filtradas.
+   * @param filterName Name of the filter.
+   * @param filterValue Value of the filter.
+   * @returns Cards found.
    */
   async getCardsBy(filterName: string, filterValue: string): Promise<IPaginatedCards> {
-    // Si el valor del filtro es vacío, lo quitamos de la lista de filtros a aplicar.
-    // De lo contrario, lo añadimos.
     if (filterValue === '') {
       this.filtersApplied = this.filtersApplied.filter((item) => item.filterName !== filterName);
     } else {
       this.filtersApplied.push({ filterName, filterValue });
-      // Si es el primero filtro que se aplica, lo guardamos porque actuara como el principal.
       if (this.firstAppliedFilterName === null) {
         this.firstAppliedFilterName = filterName;
       }
     }
 
-    // Si se ha deseleccionado el primer filtro causante de la solicitud a la API remota,
-    // hacemos el siguiente filtro seleccionado como principal, y consultamos su endpoint
-    // remoto para volver a llenar las cartas. Si no hay mas filtros, reseteamos todo.
     let endPoint = filterName;
     let endPointValue = filterValue;
 
@@ -120,15 +124,11 @@ export default class API {
       this.cards = [];
     }
 
-    // Si el numero de filtros aplicados es 0, entonces significa que hemos
-    // reseteado todos los filtros, por tanto vaciamos las cartas y devolvemos vacio.
     if (!this.filtersApplied.length) {
       this.cards = [];
       return { cards: [], paginator: null };
     }
 
-    // Si no tenemos cartas guardadas hacemos la busqueda de la API con el
-    // filtro pasado como endpoint (guardado como principal anteriormente).
     if (!this.cards.length) {
       const returnedCards = await Fetch.get(endPoint, endPointValue);
       this.cards = returnedCards !== null ? returnedCards : [];
@@ -136,8 +136,6 @@ export default class API {
       this.filteredCards = this.cards;
     }
 
-    // Tenemos cartas guardadas, por tanto las consultamos localmente aplicando
-    // todos los filtros almacenados.
     this.filteredCards = this.cards;
     this.filtersApplied.forEach((filter) => {
       if (filter.filterName !== this.firstAppliedFilterName) {
@@ -149,33 +147,26 @@ export default class API {
       }
     });
 
-    // Devolvemos las cartas resultantes
     return this.getCards();
   }
 
   /**
-   * Devuelve una promesa que resuelve en las propiedades de la carta con el id dado.
+   * Returns the properties of the given card.
    * @async
-   * @param id id de la carta.
-   * @returns Promesa que resuelve en la carta.
+   * @param id Id of the card.
+   * @returns Card properties.
    */
   async getCardByID(id): Promise<ICard | null> {
-    // Miramos primero si la carta esta en la lista actual de cartas recibidas de
-    // la API en la ultima solicitud realizada.
     let foundCard = this.cards.find((card) => card.cardId === id);
     if (!foundCard) {
-      // Si no lo esta, miramos si es una carta que hemos buscado y guardado antes.
       foundCard = this.storedCards.find((card) => card.cardId === id);
     }
 
-    // No hemos encontrado la carta, la consultamos de la API.
     if (!foundCard) {
       const foundCards = await Fetch.get('cards', id);
       foundCard = foundCards ? foundCards[0] : null;
     }
 
-    // Almacenamos la carta si ha sido devuelta de la API, y la devolvemos creando
-    // un objeto Card.
     if (foundCard) {
       this.cleanCardData(foundCard);
       foundCard.image = Fetch.getImageURL(foundCard.cardId);
@@ -183,25 +174,18 @@ export default class API {
       return foundCard;
     }
 
-    // No hemos encontrado la carta localmente, pero tampoco la hemos podido obtener
-    // de la API, por tanto informamos y devolvemos null.
     return null;
   }
 
   /**
-   * Devuelve todos los filtros con sus opciones reducidas a aquellas que tienen cartas en base a los
-   * filtros actuales aplicados.
-   * @returns Filtros con cartas.
+   * Returns all the filters with reduced options based on the current cards.
+   * @returns filters with active options.
    */
   getFilters(): IFilters {
-    // Si no tenemos cartas es poque no hemos consultado la API todavia por
-    // primera vez. En este caso devolvemos los filtros originales.
     if (!this.cards.length) {
       return this.filters;
     }
 
-    // Tenemos cartas, por tanto tenemos que actualizar el contenido de los
-    // filtros en base a las propiedades que tienen las cartas.
     const { filteredCards: cards, filters } = this;
     const commonFilters = {};
 
@@ -209,8 +193,6 @@ export default class API {
       const prop = filterToProp[filterName];
       const filteredOptions = {};
 
-      // Usamos un contador para saber cuantas cartas tienen cada una
-      // de las propiedades representadas por cada uno de los filtros.
       cards.forEach((card) => {
         if (hasProps(card, prop)) {
           if (Number.isNaN(filteredOptions[card[prop]])) {
@@ -221,8 +203,6 @@ export default class API {
         }
       });
 
-      // Solo nos quedamos con aquellas opciones de filtro comunes a
-      // TODAS las cartas.
       commonFilters[filterName] = filters[filterName].filter(
         (option) => filteredOptions[option] > 0
       );
@@ -231,21 +211,20 @@ export default class API {
   }
 
   /**
-   * Devuelve los nombres de todos los filtros aplicados.
-   * @returns Array con el nombre de los filtros aplicados.
+   * Returns the name of all the filters that are currently applied.
+   * @returns Array with the name of the filters applied.
    */
   getFiltersApplied(): string[] {
     return this.filtersApplied.map((filter) => filter.filterName);
   }
 
   /**
-   * Devuelve las cartas usando paginación.
-   * Utiliza las cartas actuales resultantes de las últimas operaciones de filtro.
-   * @param page Número de la página.
-   * @param cardsPerPage Número de cartas por página.
-   * @returns Cartas en la página seleccionada.
+   * Returns cards with pagination.
+   * @param page Page number.
+   * @param cardsPerPage Number of cards per page.
+   * @returns Cards in the selected page.
    */
-  getCards(page = 1, cardsPerPage = this.cardsPerPage) {
+  getCards(page = 1, cardsPerPage = this.cardsPerPage): IPaginatedCards {
     let cards = this.filteredCards;
     const totalItems = cards.length;
     const totalPages = Math.ceil(totalItems / cardsPerPage);
@@ -272,8 +251,8 @@ export default class API {
   }
 
   /**
-   * Devuelve la URL de la imágen para la carta dada.
-   * @param cardId ID de la carta.
+   * Returns the image URL for the given card.
+   * @param cardId Card Id.
    */
   getPicture(cardId: string): string {
     return Fetch.getImageURL(cardId);

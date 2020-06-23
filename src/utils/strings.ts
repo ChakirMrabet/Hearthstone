@@ -5,7 +5,7 @@
  */
 
 /**
- * Sets to capitals the first letter of the given word.
+ * Sets to uppercase the first letter of the given word.
  * @param word Word to capitalize.
  */
 export function capitalize(word: string): string {

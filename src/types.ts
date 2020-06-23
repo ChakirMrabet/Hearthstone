@@ -125,10 +125,7 @@ export interface IInitAppAction {
 
 export interface IFetchCardsAction {
   type: typeof ACTIONS.FETCH_CARDS;
-  payload: {
-    cards: ICard[];
-    paginator: IPaginator;
-  };
+  payload: IPaginatedCards;
 }
 
 export interface IFetchCardAction {

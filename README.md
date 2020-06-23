@@ -1,26 +1,28 @@
-# Hearthstone Browser
+# Hearthstone Browser, v1.0
 
 A small application for browsing HearthStone cards and building your own decks using the HearthStone API hosted at RapidAPI. The decks can be exported into `JSON` files, which then can be imported again into the application.
 
-This project uses React and TypeScript.
+This project is made with React and TypeScript, and it queries the remote API only when the searched cards have not been downloaded before. The application searches first in the local content for the desired data before attempting to query from the remote API.
 
-# Usage
+A live version can be found at http://hearthstone.cmrabet.com .
+
+## Usage
 
 After cloning the repository, make a copy of `.env.example` into a new file `.env`, in which you need to enter your RapidAPI credentials. Once this is done, from within the project folder, run the following command:
 
 `npm install`
 
-## Build
+### Build
 
 `npm run build`
 
 The folder `dist` will contain the distributable files.
 
-## Develop
+### Develop
 
 `npm start`
 
-# MIT License
+## MIT License
 
 HearthStone Browser.
 Copyright (c) 2020 Chakir Mrabet <hello@cmrabet.com>
