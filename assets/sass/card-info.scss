@@ -1,0 +1,35 @@
+#card-info {
+  max-height: 45%;
+  background-color: $text-bg-color;
+  padding: 1rem;
+  border-radius: 1rem;
+  overflow-y: hidden;
+
+  h2 {
+    color: white;
+  }
+
+  p {
+    color: $text-highlight-color;
+  }
+
+  & > div {
+    height: 80%;
+    overflow-y: auto;
+    @include scrollbar(light);
+
+    dt {
+      font-weight: bold;
+      color: $text-highlight-color;
+      &::first-letter {
+        text-transform: capitalize;
+      }
+    }
+
+    dd {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      color: white;
+    }
+  }
+}

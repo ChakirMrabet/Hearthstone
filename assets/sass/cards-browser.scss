@@ -1,0 +1,56 @@
+$info-height: 5rem;
+
+#card-browser {
+  height: 100vh;
+  display: grid;
+
+  .info {
+    height: $info-height;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2rem 0 2rem;
+
+    .paginator {
+      p {
+        display: inline-block;
+        padding: 0 1rem 0 1rem;
+      }
+
+      select {
+        width: 4em;
+        margin-right: 1rem;
+        color: $text-bg-color;
+        background-color: $text-light-color;
+        border: 2px solid $text-bg-color;
+      }
+    }
+  }
+
+  .content {
+    height: calc(100vh - #{$info-height + 4rem});
+    overflow: hidden;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2rem;
+
+    &.empty {
+      height: calc(100vh - 4rem);
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:not(.empty) {
+      & > div {
+        height: calc(100vh - #{$info-height + 4rem});
+        overflow-y: auto;
+
+        @include scrollbar;
+      }
+    }
+  }
+}

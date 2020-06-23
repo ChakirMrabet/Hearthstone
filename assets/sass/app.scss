@@ -1,0 +1,16 @@
+$text-bg-color: #35271f;
+$text-light-color: #bba680;
+$text-highlight-color: yellow;
+
+@import './mixins.scss';
+
+@import './layout.scss';
+@import './typography.scss';
+@import './modal.scss';
+@import './filters-panel.scss';
+@import './cards-browser.scss';
+@import './deck.scss';
+@import './card-info.scss';
+@import './card.scss';
+@import './forms.scss';
+@import './loader.scss';

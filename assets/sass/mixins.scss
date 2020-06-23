@@ -1,0 +1,34 @@
+@mixin scrollbar($type: dark) {
+  $bar-color: $text-bg-color;
+
+  @if $type == light {
+    $bar-color: $text-light-color;
+  }
+
+  // Chrome/Edge/Safari
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $bar-color;
+    border-radius: 2rem;
+  }
+
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: $bar-color transparent;
+}
+
+@mixin boxButton() {
+  background-color: transparent;
+  border: none;
+  color: #bba680;
+  &:hover {
+    color: #614326;
+  }
+}

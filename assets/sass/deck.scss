@@ -1,0 +1,57 @@
+#deck {
+  max-height: 50%;
+  background-color: #35271f;
+  padding: 1rem;
+  border-radius: 1rem;
+  overflow-y: hidden;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    h2 {
+      color: white;
+    }
+
+    button {
+      @include boxButton();
+    }
+  }
+
+  p {
+    color: #bbbb00;
+  }
+
+  ul {
+    height: 90%;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    overflow-y: auto;
+
+    @include scrollbar(light);
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #bba680;
+
+      &:not(:last-of-type) {
+        border-bottom: 1pt solid #614326;
+      }
+
+      button {
+        @include boxButton();
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+
+        &:hover {
+          color: #aaaaaa;
+        }
+      }
+    }
+  }
+}

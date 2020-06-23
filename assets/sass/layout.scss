@@ -1,0 +1,25 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#root {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 32rem 3fr 32rem;
+
+    background-image: url('../img/body-top-bg.png'), url('../img/body-center-bg.jpg');
+    background-position: top, center;
+    background-repeat: repeat-x, repeat;
+}
+
+#info-panel {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: url('../img/info-panel-bg.png');
+    padding: 2rem;
+}

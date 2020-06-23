@@ -1,0 +1,38 @@
+.form-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    margin-bottom: 0.5rem;
+  }
+}
+select {
+  border: none;
+  background-color: #35271f;
+  color: yellow;
+  width: 25rem;
+  outline: none;
+}
+
+button {
+  background-color: #bba680;
+  color: #614326;
+  outline: none;
+
+  &:hover {
+    background-color: yellow;
+  }
+}
+
+select,
+button {
+  padding: 0.5rem;
+  border-color: #614326;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+  background-color: yellow;
+}
